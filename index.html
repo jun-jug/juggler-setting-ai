@@ -56,10 +56,10 @@
         text-align: center;
     }
 
+    /* ← 修正版：ボタン完全センター */
     .btn-wrap {
-        display: flex;
-        justify-content: center;
         width: 100%;
+        text-align: center;
         margin-top: 20px;
     }
 
@@ -73,6 +73,7 @@
         cursor: pointer;
         width: 90%;
         max-width: 300px;
+        display: inline-block; /* ← これで絶対センター */
         box-shadow: 0 0 10px #9d4edd;
         transition: 0.2s;
     }
@@ -100,7 +101,7 @@
 
 <div class="wrapper">
 
-<h1>マイジャグV 設定判定AI（潤さん専用）</h1>
+<h1>マイジャグV 設定判定AI</h1>
 
 <div class="input-box">
     <input id="spins" type="number" inputmode="numeric" placeholder="総回転数">
@@ -108,7 +109,9 @@
     <input id="reg" type="number" inputmode="numeric" placeholder="REG">
     <input id="grape" type="number" inputmode="numeric" placeholder="ぶどう（100G中の回数）">
     <input id="maxcoin" type="number" inputmode="numeric" placeholder="最高出玉（ピーク）">
-    <input id="currentCoin" type="number" inputmode="numeric" placeholder="現在持ち玉（今）">
+
+    <!-- ← 修正版：decimal でマイナス入力OK -->
+    <input id="currentCoin" type="number" inputmode="decimal" placeholder="現在持ち玉（今）">
 </div>
 
 <div class="btn-wrap">
