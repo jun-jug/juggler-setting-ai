@@ -2,6 +2,10 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+
+<!-- スマホ画面の勝手な縮小・拡大を禁止（画面切り替わり防止） -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 <title>マイジャグV 設定判定AI（潤さん専用）</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -12,7 +16,7 @@
         color: #fff;
         font-family: "Segoe UI", sans-serif;
         text-align: center;
-        padding: 0;
+        padding: 10px;   /* ←余白あり（控えめ） */
         margin: 0;
         overflow-x: hidden;
     }
@@ -21,50 +25,59 @@
         color: #c77dff;
         text-shadow: 0 0 10px #9d4edd;
         margin: 20px 0;
-        font-size: 26px;
+        font-size: 30px;   /* ←文字大きめ */
     }
 
     .input-box, .result-box {
         background: #1a0b2e;
         padding: 20px;
+        border-radius: 12px;
         width: 100%;
-        margin: 0 0 20px 0;
+        max-width: 450px;
+        margin: 0 auto 20px auto;
+        box-shadow: 0 0 15px #5a189a;
     }
 
     input {
         width: 90%;
-        padding: 12px;
+        padding: 14px;
         margin: 10px 0;
         border-radius: 8px;
         border: none;
-        font-size: 18px;
+        font-size: 20px;   /* ←文字大きめ */
         text-align: center;
     }
 
     button {
         background: #7b2cbf;
         color: white;
-        padding: 14px 30px;
+        padding: 16px 30px;
         border: none;
         border-radius: 10px;
-        font-size: 20px;
+        font-size: 22px;
         cursor: pointer;
         margin-top: 10px;
         width: 90%;
         max-width: 300px;
         box-shadow: 0 0 10px #9d4edd;
+        transition: 0.2s;
+    }
+
+    button:hover {
+        background: #9d4edd;
+        box-shadow: 0 0 20px #c77dff;
+    }
+
+    .setting-line {
+        font-size: 24px;
+        margin: 8px 0;
     }
 
     canvas {
         display: block;
         margin: 20px auto;
         width: 100%;
-        max-width: 100%;
-    }
-
-    .setting-line {
-        font-size: 22px;
-        margin: 8px 0;
+        max-width: 450px;
     }
 </style>
 
@@ -74,10 +87,10 @@
 <h1>マイジャグV 設定判定AI（潤さん専用）</h1>
 
 <div class="input-box">
-    <input id="spins" type="number" placeholder="総回転数">
-    <input id="big" type="number" placeholder="BIG">
-    <input id="reg" type="number" placeholder="REG">
-    <input id="maxcoin" type="number" placeholder="最高出玉">
+    <input id="spins" type="number" inputmode="numeric" placeholder="総回転数">
+    <input id="big" type="number" inputmode="numeric" placeholder="BIG">
+    <input id="reg" type="number" inputmode="numeric" placeholder="REG">
+    <input id="maxcoin" type="number" inputmode="numeric" placeholder="最高出玉">
 </div>
 
 <button onclick="judge()">判定する</button>
@@ -105,14 +118,13 @@ const expected = {
 
 // 二項分布の簡易尤度
 function likelihood(hit, total, prob) {
-    if (total <= 0) return 1; // 安全対策
+    if (total <= 0) return 1;
     return Math.pow(prob, hit) * Math.pow(1 - prob, total - hit);
 }
 
 let chart = null;
 
 function judge() {
-    // 空欄対策：空なら 0 を入れる
     const spins = Number(document.getElementById("spins").value) || 0;
     const big = Number(document.getElementById("big").value) || 0;
     const reg = Number(document.getElementById("reg").value) || 0;
@@ -127,12 +139,11 @@ function judge() {
         const Lreg = likelihood(reg, spins, data[s].reg);
         const Lsum = likelihood(sum, spins, data[s].sum);
 
-        let score = 
+        let score =
             Math.pow(Lbig, 1) *
             Math.pow(Lreg, 3) *
             Math.pow(Lsum, 4);
 
-        // 最高出玉補正（強め）
         let adj = maxcoin / expected[s];
         adj = Math.max(0.5, Math.min(adj, 1.5));
 
@@ -145,7 +156,6 @@ function judge() {
         scores[s] = (scores[s] / total) * 100;
     }
 
-    // テキスト表示
     let html = "<h2>設定判別結果</h2>";
     for (let s = 1; s <= 6; s++) {
         html += `<div class="setting-line">設定${s}：${scores[s].toFixed(1)}%</div>`;
@@ -154,7 +164,6 @@ function judge() {
     document.getElementById("result").innerHTML = html;
     document.getElementById("result").style.display = "block";
 
-    // グラフ描画
     const ctx = document.getElementById("chart");
 
     if (chart) chart.destroy();
