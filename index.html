@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 
-<!-- スマホ画面の勝手な縮小・拡大を禁止（画面切り替わり防止） -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <title>マイジャグV 設定判定AI（潤さん専用）</title>
@@ -16,7 +15,7 @@
         color: #fff;
         font-family: "Segoe UI", sans-serif;
         text-align: center;
-        padding: 10px;   /* ←余白あり */
+        padding: 10px;
         margin: 0;
         overflow-x: hidden;
     }
@@ -25,7 +24,7 @@
         color: #c77dff;
         text-shadow: 0 0 10px #9d4edd;
         margin: 20px 0;
-        font-size: 30px;   /* ←文字大きめ */
+        font-size: 30px;
     }
 
     .input-box, .result-box {
@@ -44,7 +43,7 @@
         margin: 10px 0;
         border-radius: 8px;
         border: none;
-        font-size: 20px;   /* ←文字大きめ */
+        font-size: 20px;
         text-align: center;
     }
 
@@ -61,8 +60,10 @@
         box-shadow: 0 0 10px #9d4edd;
         transition: 0.2s;
 
-        display: block;        /* ←センター化の核 */
-        margin: 20px auto;     /* ←左右オートで中央 */
+        display: block;        /* ←絶対センター */
+        margin-left: auto;     /* ←絶対センター */
+        margin-right: auto;    /* ←絶対センター */
+        margin-top: 20px;
     }
 
     button:hover {
@@ -79,7 +80,7 @@
         display: block;
         margin: 20px auto;
         width: 100%;
-        max-width: 450px;   /* ←中央寄せ＋幅制限 */
+        max-width: 450px;
     }
 </style>
 
@@ -118,10 +119,11 @@ const expected = {
     4: 3000, 5: 3500, 6: 4000
 };
 
-// 二項分布の簡易尤度
+// 二項分布の簡易尤度（極小値対策入り）
 function likelihood(hit, total, prob) {
     if (total <= 0) return 1;
-    return Math.pow(prob, hit) * Math.pow(1 - prob, total - hit);
+    const v = Math.pow(prob, hit) * Math.pow(1 - prob, total - hit);
+    return Math.max(v, 1e-300);  // ←0％対策
 }
 
 let chart = null;
