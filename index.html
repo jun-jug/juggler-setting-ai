@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 
+<!-- スマホ画面固定（ズーム禁止） -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <title>マイジャグV 設定判定AI（潤さん専用）</title>
@@ -10,12 +11,22 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-    body {
+    /* スマホ専用幅に固定（アプリ化） */
+    .wrapper {
+        width: 390px;          /* ←スマホ幅固定（iPhone基準） */
+        margin: 0 auto;        /* ←中央固定 */
         background: #0b0014;
-        color: #fff;
-        font-family: "Segoe UI", sans-serif;
+        min-height: 100vh;
         padding: 10px;
+        box-sizing: border-box;
+    }
+
+    body {
         margin: 0;
+        padding: 0;
+        background: #000;      /* ←背景黒でアプリ感UP */
+        font-family: "Segoe UI", sans-serif;
+        color: #fff;
         overflow-x: hidden;
     }
 
@@ -32,7 +43,6 @@
         padding: 20px;
         border-radius: 12px;
         width: 100%;
-        max-width: 450px;
         margin: 0 auto 20px auto;
         box-shadow: 0 0 15px #5a189a;
         text-align: center;
@@ -48,7 +58,7 @@
         text-align: center;
     }
 
-    /* ボタンを絶対センターにする */
+    /* ボタン絶対センター */
     .btn-wrap {
         display: flex;
         justify-content: center;
@@ -84,12 +94,14 @@
         display: block;
         margin: 20px auto;
         width: 100%;
-        max-width: 450px;
+        max-width: 350px;
     }
 </style>
 
 </head>
 <body>
+
+<div class="wrapper">
 
 <h1>マイジャグV 設定判定AI（潤さん専用）</h1>
 
@@ -107,6 +119,8 @@
 <div id="result" class="result-box" style="display:none;"></div>
 
 <canvas id="chart"></canvas>
+
+</div> <!-- wrapper end -->
 
 <script>
 // 設定ごとの確率
