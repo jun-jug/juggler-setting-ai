@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>マイジャグV 設定判定AI（潤さん専用）</title>
 
-<!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
@@ -13,7 +12,7 @@
         color: #fff;
         font-family: "Segoe UI", sans-serif;
         text-align: center;
-        padding: 0;      /* ←余白ゼロ */
+        padding: 0;
         margin: 0;
         overflow-x: hidden;
     }
@@ -28,11 +27,8 @@
     .input-box, .result-box {
         background: #1a0b2e;
         padding: 20px;
-        border-radius: 0;     /* ←画面いっぱいに馴染む */
-        width: 100%;          /* ←余白ゼロで全幅 */
-        max-width: none;
+        width: 100%;
         margin: 0 0 20px 0;
-        box-shadow: none;
     }
 
     input {
@@ -57,25 +53,18 @@
         width: 90%;
         max-width: 300px;
         box-shadow: 0 0 10px #9d4edd;
-        transition: 0.2s;
     }
 
-    button:hover {
-        background: #9d4edd;
-        box-shadow: 0 0 20px #c77dff;
-    }
-
-    .setting-line {
-        font-size: 22px;
-        margin: 8px 0;
-    }
-
-    /* グラフ中央寄せ＋全幅フィット */
     canvas {
         display: block;
         margin: 20px auto;
         width: 100%;
         max-width: 100%;
+    }
+
+    .setting-line {
+        font-size: 22px;
+        margin: 8px 0;
     }
 </style>
 
@@ -98,7 +87,7 @@
 <canvas id="chart"></canvas>
 
 <script>
-// マイジャグV 設定ごとの確率データ
+// マイジャグV 設定ごとの確率
 const data = {
     1: { big: 1/287, reg: 1/431, sum: 1/172 },
     2: { big: 1/282, reg: 1/364, sum: 1/160 },
@@ -108,40 +97,35 @@ const data = {
     6: { big: 1/240, reg: 1/240, sum: 1/120 }
 };
 
-// 設定ごとの期待最高出玉
+// 期待最高出玉
 const expected = {
-    1: 1500,
-    2: 2000,
-    3: 2500,
-    4: 3000,
-    5: 3500,
-    6: 4000
+    1: 1500, 2: 2000, 3: 2500,
+    4: 3000, 5: 3500, 6: 4000
 };
 
 // 二項分布の簡易尤度
 function likelihood(hit, total, prob) {
+    if (total <= 0) return 1; // 安全対策
     return Math.pow(prob, hit) * Math.pow(1 - prob, total - hit);
 }
 
 let chart = null;
 
 function judge() {
-    const spins = Number(document.getElementById("spins").value);
-    const big = Number(document.getElementById("big").value);
-    const reg = Number(document.getElementById("reg").value);
-    const maxcoin = Number(document.getElementById("maxcoin").value);
+    // 空欄対策：空なら 0 を入れる
+    const spins = Number(document.getElementById("spins").value) || 0;
+    const big = Number(document.getElementById("big").value) || 0;
+    const reg = Number(document.getElementById("reg").value) || 0;
+    const maxcoin = Number(document.getElementById("maxcoin").value) || 1;
+
     const sum = big + reg;
 
     let scores = {};
 
     for (let s = 1; s <= 6; s++) {
-        const pBig = data[s].big;
-        const pReg = data[s].reg;
-        const pSum = data[s].sum;
-
-        const Lbig = likelihood(big, spins, pBig);
-        const Lreg = likelihood(reg, spins, pReg);
-        const Lsum = likelihood(sum, spins, pSum);
+        const Lbig = likelihood(big, spins, data[s].big);
+        const Lreg = likelihood(reg, spins, data[s].reg);
+        const Lsum = likelihood(sum, spins, data[s].sum);
 
         let score = 
             Math.pow(Lbig, 1) *
@@ -155,7 +139,8 @@ function judge() {
         scores[s] = score * adj;
     }
 
-    const total = Object.values(scores).reduce((a,b)=>a+b,0);
+    const total = Object.values(scores).reduce((a,b)=>a+b,0) || 1;
+
     for (let s = 1; s <= 6; s++) {
         scores[s] = (scores[s] / total) * 100;
     }
@@ -165,10 +150,11 @@ function judge() {
     for (let s = 1; s <= 6; s++) {
         html += `<div class="setting-line">設定${s}：${scores[s].toFixed(1)}%</div>`;
     }
+
     document.getElementById("result").innerHTML = html;
     document.getElementById("result").style.display = "block";
 
-    // 棒グラフ描画
+    // グラフ描画
     const ctx = document.getElementById("chart");
 
     if (chart) chart.destroy();
@@ -193,17 +179,10 @@ function judge() {
         options: {
             responsive: true,
             scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: { color: "white" }
-                },
-                x: {
-                    ticks: { color: "white" }
-                }
+                y: { beginAtZero: true, ticks: { color: "white" } },
+                x: { ticks: { color: "white" } }
             },
-            plugins: {
-                legend: { display: false }
-            }
+            plugins: { legend: { display: false } }
         }
     });
 }
