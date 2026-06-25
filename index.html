@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ジャグラー設定判定（潤さん専用）</title>
+<style>
+    body { font-family: sans-serif; padding: 20px; }
+    input { width: 100%; padding: 10px; margin: 5px 0; font-size: 18px; }
+    button { width: 100%; padding: 15px; font-size: 20px; margin-top: 10px; }
+    .result { margin-top: 20px; font-size: 22px; }
+</style>
+</head>
+<body>
+
+<h2>ジャグラー設定判定（潤さん専用）</h2>
+
+<label>総回転数</label>
+<input id="spins" type="number">
+
+<label>BIG</label>
+<input id="big" type="number">
+
+<label>REG</label>
+<input id="reg" type="number">
+
+<label>ぶどう</label>
+<input id="grape" type="number">
+
+<button onclick="judge()">判定する</button>
+
+<div class="result" id="result"></div>
+
+<script>
+function judge() {
+    const spins = Number(document.getElementById("spins").value);
+    const big = Number(document.getElementById("big").value);
+    const reg = Number(document.getElementById("reg").value);
+    const grape = Number(document.getElementById("grape").value);
+
+    if (!spins) {
+        document.getElementById("result").innerHTML = "総回転数を入力してね！";
+        return;
+    }
+
+    // とりあえず仮の判定ロジック（あとで本物のロジックに差し替える）
+    const rate = ((big + reg) / spins * 1000).toFixed(1);
+
+    document.getElementById("result").innerHTML =
+        "簡易判定：合算 " + rate + "（本ロジックは後で実装）";
+}
+</script>
+
+</body>
+</html>
