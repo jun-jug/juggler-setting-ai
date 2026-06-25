@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <title>マイジャグV 設定判定AI（潤さん専用）</title>
 
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
     body {
         background: #0b0014;
@@ -19,8 +22,7 @@
         color: #c77dff;
         text-shadow: 0 0 10px #9d4edd;
         margin-bottom: 30px;
-        font-size: 6vw;
-        max-font-size: 32px;
+        font-size: 26px; /* ←小さくした */
     }
 
     .input-box, .result-box {
@@ -68,24 +70,9 @@
         margin: 8px 0;
     }
 
-    @media (max-width: 480px) {
-        h1 {
-            font-size: 7vw;
-        }
-
-        input {
-            font-size: 16px;
-            padding: 10px;
-        }
-
-        button {
-            font-size: 18px;
-            padding: 12px 20px;
-        }
-
-        .setting-line {
-            font-size: 18px;
-        }
+    canvas {
+        margin-top: 20px;
+        max-width: 350px;
     }
 </style>
 
@@ -98,11 +85,14 @@
     <input id="spins" type="number" placeholder="総回転数">
     <input id="big" type="number" placeholder="BIG">
     <input id="reg" type="number" placeholder="REG">
+    <input id="maxcoin" type="number" placeholder="最高出玉">
 </div>
 
 <button onclick="judge()">判定する</button>
 
 <div id="result" class="result-box" style="display:none;"></div>
+
+<canvas id="chart"></canvas>
 
 <script>
 // マイジャグV 設定ごとの確率データ
@@ -115,15 +105,28 @@ const data = {
     6: { big: 1/240, reg: 1/240, sum: 1/120 }
 };
 
+// 設定ごとの期待最高出玉
+const expected = {
+    1: 1500,
+    2: 2000,
+    3: 2500,
+    4: 3000,
+    5: 3500,
+    6: 4000
+};
+
 // 二項分布の簡易尤度
 function likelihood(hit, total, prob) {
     return Math.pow(prob, hit) * Math.pow(1 - prob, total - hit);
 }
 
+let chart = null;
+
 function judge() {
     const spins = Number(document.getElementById("spins").value);
     const big = Number(document.getElementById("big").value);
     const reg = Number(document.getElementById("reg").value);
+    const maxcoin = Number(document.getElementById("maxcoin").value);
     const sum = big + reg;
 
     let scores = {};
@@ -137,12 +140,16 @@ function judge() {
         const Lreg = likelihood(reg, spins, pReg);
         const Lsum = likelihood(sum, spins, pSum);
 
-        const score = 
+        let score = 
             Math.pow(Lbig, 1) *
             Math.pow(Lreg, 3) *
             Math.pow(Lsum, 4);
 
-        scores[s] = score;
+        // 最高出玉補正（強め）
+        let adj = maxcoin / expected[s];
+        adj = Math.max(0.5, Math.min(adj, 1.5));
+
+        scores[s] = score * adj;
     }
 
     const total = Object.values(scores).reduce((a,b)=>a+b,0);
@@ -150,13 +157,41 @@ function judge() {
         scores[s] = (scores[s] / total) * 100;
     }
 
+    // テキスト表示
     let html = "<h2>設定判別結果</h2>";
     for (let s = 1; s <= 6; s++) {
         html += `<div class="setting-line">設定${s}：${scores[s].toFixed(1)}%</div>`;
     }
-
     document.getElementById("result").innerHTML = html;
     document.getElementById("result").style.display = "block";
+
+    // 円グラフ描画
+    const ctx = document.getElementById("chart");
+
+    if (chart) chart.destroy();
+
+    chart = new Chart(ctx, {
+        type: "pie",
+        data: {
+            labels: ["設定1", "設定2", "設定3", "設定4", "設定5", "設定6"],
+            datasets: [{
+                data: [
+                    scores[1], scores[2], scores[3],
+                    scores[4], scores[5], scores[6]
+                ],
+                backgroundColor: [
+                    "#ff4d6d", "#ffb3c1", "#c77dff",
+                    "#9d4edd", "#7b2cbf", "#5a189a"
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { labels: { color: "white" } }
+            }
+        }
+    });
 }
 </script>
 
