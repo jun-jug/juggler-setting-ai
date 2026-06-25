@@ -16,7 +16,7 @@
         color: #fff;
         font-family: "Segoe UI", sans-serif;
         text-align: center;
-        padding: 10px;   /* ←余白あり（控えめ） */
+        padding: 10px;   /* ←余白あり */
         margin: 0;
         overflow-x: hidden;
     }
@@ -56,11 +56,13 @@
         border-radius: 10px;
         font-size: 22px;
         cursor: pointer;
-        margin-top: 10px;
         width: 90%;
         max-width: 300px;
         box-shadow: 0 0 10px #9d4edd;
         transition: 0.2s;
+
+        display: block;        /* ←センター化の核 */
+        margin: 20px auto;     /* ←左右オートで中央 */
     }
 
     button:hover {
@@ -77,7 +79,7 @@
         display: block;
         margin: 20px auto;
         width: 100%;
-        max-width: 450px;
+        max-width: 450px;   /* ←中央寄せ＋幅制限 */
     }
 </style>
 
