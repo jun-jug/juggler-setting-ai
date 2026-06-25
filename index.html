@@ -13,7 +13,7 @@
         color: #fff;
         font-family: "Segoe UI", sans-serif;
         text-align: center;
-        padding: 20px;
+        padding: 0;      /* ←余白ゼロ */
         margin: 0;
         overflow-x: hidden;
     }
@@ -21,18 +21,18 @@
     h1 {
         color: #c77dff;
         text-shadow: 0 0 10px #9d4edd;
-        margin-bottom: 30px;
-        font-size: 26px; /* ←小さく調整済み */
+        margin: 20px 0;
+        font-size: 26px;
     }
 
     .input-box, .result-box {
         background: #1a0b2e;
         padding: 20px;
-        border-radius: 12px;
-        width: 95%;
-        max-width: 450px;
-        margin: 0 auto 20px auto;
-        box-shadow: 0 0 15px #5a189a;
+        border-radius: 0;     /* ←画面いっぱいに馴染む */
+        width: 100%;          /* ←余白ゼロで全幅 */
+        max-width: none;
+        margin: 0 0 20px 0;
+        box-shadow: none;
     }
 
     input {
@@ -54,10 +54,10 @@
         font-size: 20px;
         cursor: pointer;
         margin-top: 10px;
-        box-shadow: 0 0 10px #9d4edd;
-        transition: 0.2s;
         width: 90%;
         max-width: 300px;
+        box-shadow: 0 0 10px #9d4edd;
+        transition: 0.2s;
     }
 
     button:hover {
@@ -70,11 +70,12 @@
         margin: 8px 0;
     }
 
-    /* グラフ中央寄せ */
+    /* グラフ中央寄せ＋全幅フィット */
     canvas {
         display: block;
         margin: 20px auto;
-        max-width: 350px;
+        width: 100%;
+        max-width: 100%;
     }
 </style>
 
