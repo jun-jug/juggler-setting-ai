@@ -22,7 +22,7 @@
         color: #c77dff;
         text-shadow: 0 0 10px #9d4edd;
         margin-bottom: 30px;
-        font-size: 26px; /* ←小さくした */
+        font-size: 26px;
     }
 
     .input-box, .result-box {
@@ -152,48 +152,4 @@ function judge() {
         scores[s] = score * adj;
     }
 
-    const total = Object.values(scores).reduce((a,b)=>a+b,0);
-    for (let s = 1; s <= 6; s++) {
-        scores[s] = (scores[s] / total) * 100;
-    }
-
-    // テキスト表示
-    let html = "<h2>設定判別結果</h2>";
-    for (let s = 1; s <= 6; s++) {
-        html += `<div class="setting-line">設定${s}：${scores[s].toFixed(1)}%</div>`;
-    }
-    document.getElementById("result").innerHTML = html;
-    document.getElementById("result").style.display = "block";
-
-    // 円グラフ描画
-    const ctx = document.getElementById("chart");
-
-    if (chart) chart.destroy();
-
-    chart = new Chart(ctx, {
-        type: "pie",
-        data: {
-            labels: ["設定1", "設定2", "設定3", "設定4", "設定5", "設定6"],
-            datasets: [{
-                data: [
-                    scores[1], scores[2], scores[3],
-                    scores[4], scores[5], scores[6]
-                ],
-                backgroundColor: [
-                    "#ff4d6d", "#ffb3c1", "#c77dff",
-                    "#9d4edd", "#7b2cbf", "#5a189a"
-                ]
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { labels: { color: "white" } }
-            }
-        }
-    });
-}
-</script>
-
-</body>
-</html>
+    const total = Object.values(scores).reduce((a,b)=>a+b
