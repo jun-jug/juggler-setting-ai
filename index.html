@@ -2,51 +2,161 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>ジャグラー設定判定（潤さん専用）</title>
+<title>マイジャグV 設定判定AI（潤さん専用）</title>
+
 <style>
-    body { font-family: sans-serif; padding: 20px; }
-    input { width: 100%; padding: 10px; margin: 5px 0; font-size: 18px; }
-    button { width: 100%; padding: 15px; font-size: 20px; margin-top: 10px; }
-    .result { margin-top: 20px; font-size: 22px; }
+    body {
+        background: #0b0014;
+        color: #fff;
+        font-family: "Segoe UI", sans-serif;
+        text-align: center;
+        padding: 20px;
+        margin: 0;
+        overflow-x: hidden;
+    }
+
+    h1 {
+        color: #c77dff;
+        text-shadow: 0 0 10px #9d4edd;
+        margin-bottom: 30px;
+        font-size: 6vw;
+        max-font-size: 32px;
+    }
+
+    .input-box, .result-box {
+        background: #1a0b2e;
+        padding: 20px;
+        border-radius: 12px;
+        width: 95%;
+        max-width: 450px;
+        margin: 0 auto 20px auto;
+        box-shadow: 0 0 15px #5a189a;
+    }
+
+    input {
+        width: 90%;
+        padding: 12px;
+        margin: 10px 0;
+        border-radius: 8px;
+        border: none;
+        font-size: 18px;
+        text-align: center;
+    }
+
+    button {
+        background: #7b2cbf;
+        color: white;
+        padding: 14px 30px;
+        border: none;
+        border-radius: 10px;
+        font-size: 20px;
+        cursor: pointer;
+        margin-top: 10px;
+        box-shadow: 0 0 10px #9d4edd;
+        transition: 0.2s;
+        width: 90%;
+        max-width: 300px;
+    }
+
+    button:hover {
+        background: #9d4edd;
+        box-shadow: 0 0 20px #c77dff;
+    }
+
+    .setting-line {
+        font-size: 22px;
+        margin: 8px 0;
+    }
+
+    @media (max-width: 480px) {
+        h1 {
+            font-size: 7vw;
+        }
+
+        input {
+            font-size: 16px;
+            padding: 10px;
+        }
+
+        button {
+            font-size: 18px;
+            padding: 12px 20px;
+        }
+
+        .setting-line {
+            font-size: 18px;
+        }
+    }
 </style>
+
 </head>
 <body>
 
-<h2>ジャグラー設定判定（潤さん専用）</h2>
+<h1>マイジャグV 設定判定AI（潤さん専用）</h1>
 
-<label>総回転数</label>
-<input id="spins" type="number">
-
-<label>BIG</label>
-<input id="big" type="number">
-
-<label>REG</label>
-<input id="reg" type="number">
-
-<label>ぶどう</label>
-<input id="grape" type="number">
+<div class="input-box">
+    <input id="spins" type="number" placeholder="総回転数">
+    <input id="big" type="number" placeholder="BIG">
+    <input id="reg" type="number" placeholder="REG">
+</div>
 
 <button onclick="judge()">判定する</button>
 
-<div class="result" id="result"></div>
+<div id="result" class="result-box" style="display:none;"></div>
 
 <script>
+// マイジャグV 設定ごとの確率データ
+const data = {
+    1: { big: 1/287, reg: 1/431, sum: 1/172 },
+    2: { big: 1/282, reg: 1/364, sum: 1/160 },
+    3: { big: 1/273, reg: 1/341, sum: 1/152 },
+    4: { big: 1/264, reg: 1/292, sum: 1/138 },
+    5: { big: 1/259, reg: 1/259, sum: 1/129 },
+    6: { big: 1/240, reg: 1/240, sum: 1/120 }
+};
+
+// 二項分布の簡易尤度
+function likelihood(hit, total, prob) {
+    return Math.pow(prob, hit) * Math.pow(1 - prob, total - hit);
+}
+
 function judge() {
     const spins = Number(document.getElementById("spins").value);
     const big = Number(document.getElementById("big").value);
     const reg = Number(document.getElementById("reg").value);
-    const grape = Number(document.getElementById("grape").value);
+    const sum = big + reg;
 
-    if (!spins) {
-        document.getElementById("result").innerHTML = "総回転数を入力してね！";
-        return;
+    let scores = {};
+
+    for (let s = 1; s <= 6; s++) {
+        const pBig = data[s].big;
+        const pReg = data[s].reg;
+        const pSum = data[s].sum;
+
+        const Lbig = likelihood(big, spins, pBig);
+        const Lreg = likelihood(reg, spins, pReg);
+        const Lsum = likelihood(sum, spins, pSum);
+
+        const score = 
+            Math.pow(Lbig, 1) *
+            Math.pow(Lreg, 3) *
+            Math.pow(Lsum, 4);
+
+        scores[s] = score;
     }
 
-    // とりあえず仮の判定ロジック（あとで本物のロジックに差し替える）
-    const rate = ((big + reg) / spins * 1000).toFixed(1);
+    const total = Object.values(scores).reduce((a,b)=>a+b,0);
+    for (let s = 1; s <= 6; s++) {
+        scores[s] = (scores[s] / total) * 100;
+    }
 
-    document.getElementById("result").innerHTML =
-        "簡易判定：合算 " + rate + "（本ロジックは後で実装）";
+    let html = "<h2>設定判別結果</h2>";
+    for (let s = 1; s <= 6; s++) {
+        html += `<div class="setting-line">設定${s}：${scores[s].toFixed(1)}%</div>`;
+    }
+
+    document.getElementById("result").innerHTML = html;
+    document.getElementById("result").style.display = "block";
 }
 </script>
 
