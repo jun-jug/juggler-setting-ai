@@ -22,7 +22,7 @@
         color: #c77dff;
         text-shadow: 0 0 10px #9d4edd;
         margin-bottom: 30px;
-        font-size: 26px;
+        font-size: 26px; /* ←小さく調整済み */
     }
 
     .input-box, .result-box {
@@ -70,8 +70,10 @@
         margin: 8px 0;
     }
 
+    /* グラフ中央寄せ */
     canvas {
-        margin-top: 20px;
+        display: block;
+        margin: 20px auto;
         max-width: 350px;
     }
 </style>
