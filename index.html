@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 
-<!-- スマホ画面固定（ズーム禁止） -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <title>マイジャグV 設定判定AI（潤さん専用）</title>
@@ -11,10 +10,9 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-    /* スマホ専用幅に固定（アプリ化） */
     .wrapper {
-        width: 390px;          /* ←スマホ幅固定（iPhone基準） */
-        margin: 0 auto;        /* ←中央固定 */
+        width: 390px;
+        margin: 0 auto;
         background: #0b0014;
         min-height: 100vh;
         padding: 10px;
@@ -24,7 +22,7 @@
     body {
         margin: 0;
         padding: 0;
-        background: #000;      /* ←背景黒でアプリ感UP */
+        background: #000;
         font-family: "Segoe UI", sans-serif;
         color: #fff;
         overflow-x: hidden;
@@ -58,7 +56,6 @@
         text-align: center;
     }
 
-    /* ボタン絶対センター */
     .btn-wrap {
         display: flex;
         justify-content: center;
@@ -109,6 +106,7 @@
     <input id="spins" type="number" inputmode="numeric" placeholder="総回転数">
     <input id="big" type="number" inputmode="numeric" placeholder="BIG">
     <input id="reg" type="number" inputmode="numeric" placeholder="REG">
+    <input id="grape" type="number" inputmode="numeric" placeholder="ぶどう（100G中の回数）">
     <input id="maxcoin" type="number" inputmode="numeric" placeholder="最高出玉">
 </div>
 
@@ -120,7 +118,7 @@
 
 <canvas id="chart"></canvas>
 
-</div> <!-- wrapper end -->
+</div>
 
 <script>
 // 設定ごとの確率
@@ -133,13 +131,23 @@ const data = {
     6: { big: 1/240, reg: 1/240, sum: 1/120 }
 };
 
+// ぶどう確率（マイジャグV）
+const grapeProb = {
+    1: 1/6.35,
+    2: 1/6.33,
+    3: 1/6.29,
+    4: 1/6.25,
+    5: 1/6.23,
+    6: 1/6.18
+};
+
 // 期待最高出玉
 const expected = {
     1: 1500, 2: 2000, 3: 2500,
     4: 3000, 5: 3500, 6: 4000
 };
 
-// 対数尤度（log-likelihood）→ 0％対策の決定版
+// 対数尤度
 function logLikelihood(hit, total, prob) {
     if (total <= 0) return 0;
     return hit * Math.log(prob) + (total - hit) * Math.log(1 - prob);
@@ -151,6 +159,7 @@ function judge() {
     const spins = Number(document.getElementById("spins").value) || 0;
     const big = Number(document.getElementById("big").value) || 0;
     const reg = Number(document.getElementById("reg").value) || 0;
+    const grape = Number(document.getElementById("grape").value) || 0;
     const maxcoin = Number(document.getElementById("maxcoin").value) || 1;
 
     const sum = big + reg;
@@ -162,7 +171,14 @@ function judge() {
         const Lreg = logLikelihood(reg, spins, data[s].reg);
         const Lsum = logLikelihood(sum, spins, data[s].sum);
 
-        let score = Lbig * 1 + Lreg * 3 + Lsum * 4;
+        // ぶどうは100G中の回数で判定
+        const Lgrape = logLikelihood(grape, 100, grapeProb[s]);
+
+        let score =
+            Lbig * 1 +
+            Lreg * 3 +
+            Lsum * 4 +
+            Lgrape * 2;
 
         let adj = maxcoin / expected[s];
         adj = Math.max(0.5, Math.min(adj, 1.5));
