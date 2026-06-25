@@ -14,7 +14,6 @@
         background: #0b0014;
         color: #fff;
         font-family: "Segoe UI", sans-serif;
-        text-align: center;
         padding: 10px;
         margin: 0;
         overflow-x: hidden;
@@ -25,6 +24,7 @@
         text-shadow: 0 0 10px #9d4edd;
         margin: 20px 0;
         font-size: 30px;
+        text-align: center;
     }
 
     .input-box, .result-box {
@@ -35,6 +35,7 @@
         max-width: 450px;
         margin: 0 auto 20px auto;
         box-shadow: 0 0 15px #5a189a;
+        text-align: center;
     }
 
     input {
@@ -45,6 +46,14 @@
         border: none;
         font-size: 20px;
         text-align: center;
+    }
+
+    /* ボタンを絶対センターにする */
+    .btn-wrap {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-top: 20px;
     }
 
     button {
@@ -59,11 +68,6 @@
         max-width: 300px;
         box-shadow: 0 0 10px #9d4edd;
         transition: 0.2s;
-
-        display: block;        /* ←絶対センター */
-        margin-left: auto;     /* ←絶対センター */
-        margin-right: auto;    /* ←絶対センター */
-        margin-top: 20px;
     }
 
     button:hover {
@@ -96,14 +100,16 @@
     <input id="maxcoin" type="number" inputmode="numeric" placeholder="最高出玉">
 </div>
 
-<button onclick="judge()">判定する</button>
+<div class="btn-wrap">
+    <button onclick="judge()">判定する</button>
+</div>
 
 <div id="result" class="result-box" style="display:none;"></div>
 
 <canvas id="chart"></canvas>
 
 <script>
-// マイジャグV 設定ごとの確率
+// 設定ごとの確率
 const data = {
     1: { big: 1/287, reg: 1/431, sum: 1/172 },
     2: { big: 1/282, reg: 1/364, sum: 1/160 },
@@ -119,11 +125,10 @@ const expected = {
     4: 3000, 5: 3500, 6: 4000
 };
 
-// 二項分布の簡易尤度（極小値対策入り）
-function likelihood(hit, total, prob) {
-    if (total <= 0) return 1;
-    const v = Math.pow(prob, hit) * Math.pow(1 - prob, total - hit);
-    return Math.max(v, 1e-300);  // ←0％対策
+// 対数尤度（log-likelihood）→ 0％対策の決定版
+function logLikelihood(hit, total, prob) {
+    if (total <= 0) return 0;
+    return hit * Math.log(prob) + (total - hit) * Math.log(1 - prob);
 }
 
 let chart = null;
@@ -139,19 +144,16 @@ function judge() {
     let scores = {};
 
     for (let s = 1; s <= 6; s++) {
-        const Lbig = likelihood(big, spins, data[s].big);
-        const Lreg = likelihood(reg, spins, data[s].reg);
-        const Lsum = likelihood(sum, spins, data[s].sum);
+        const Lbig = logLikelihood(big, spins, data[s].big);
+        const Lreg = logLikelihood(reg, spins, data[s].reg);
+        const Lsum = logLikelihood(sum, spins, data[s].sum);
 
-        let score =
-            Math.pow(Lbig, 1) *
-            Math.pow(Lreg, 3) *
-            Math.pow(Lsum, 4);
+        let score = Lbig * 1 + Lreg * 3 + Lsum * 4;
 
         let adj = maxcoin / expected[s];
         adj = Math.max(0.5, Math.min(adj, 1.5));
 
-        scores[s] = score * adj;
+        scores[s] = Math.exp(score) * adj;
     }
 
     const total = Object.values(scores).reduce((a,b)=>a+b,0) || 1;
