@@ -426,5 +426,91 @@ function judge() {
     const sum = big + reg;
     const diffCoin = currentCoin - maxcoin;
 
+    const status = diffCoin < 0 ? "DOWN" : "KEEP";
     const grapeOn = grape > 0;
-    const diffOn = (currentCoin !== 0 || maxcoin
+    const diffOn = (currentCoin !== 0 || maxcoin !== 0);
+
+    updatePilotLamps(grapeOn, diffOn);
+    updateGogoLamp(grapeOn, diffOn, true);
+
+    let scores = {};
+
+    for (let s = 1; s <= 6; s++) {
+        const base = settingTable[s];
+
+        const actualBig = big > 0 ? spins / big : 9999;
+        const actualReg = reg > 0 ? spins / reg : 9999;
+        const actualSum = sum > 0 ? spins / sum : 9999;
+        const actualGrape = grape > 0 ? 100 / grape : 9999;
+
+        const diffBig = Math.abs(actualBig - base.big);
+        const diffReg = Math.abs(actualReg - base.reg);
+        const diffSum = Math.abs(actualSum - base.sum);
+        const diffGrape = Math.abs(actualGrape - base.grape);
+
+        let score =
+            (1 / (diffBig + 1)) * 1 +
+            (1 / (diffReg + 1)) * 3 +
+            (1 / (diffSum + 1)) * 4;
+
+        if (grapeOn) {
+            score += (1 / (diffGrape + 1)) * 2;
+        }
+
+        if (diffOn) {
+            const expectedCoin = spins * 3 * base.rate;
+            const diff = Math.abs(diffCoin - expectedCoin);
+            score += (1 / (diff + 1)) * 1;
+        }
+
+        scores[s] = score;
+    }
+
+    const total = Object.values(scores).reduce((a, b) => a + b, 0) || 1;
+    for (let s = 1; s <= 6; s++) {
+        scores[s] = (scores[s] / total) * 100;
+    }
+
+    let html = `<h2>${seriesData[seriesKey].name} 設定判別結果</h2>`;
+    html += `<div style="font-size:20px; margin-bottom:8px;">状態：<b>${status}</b></div>`;
+    html += `<div style="font-size:16px; margin-bottom:12px;">差枚：${diffCoin} 枚</div>`;
+
+    for (let s = 1; s <= 6; s++) {
+        html += `<div class="setting-line">設定${s}：${scores[s].toFixed(1)}%</div>`;
+    }
+
+    const resultBox = document.getElementById("result");
+    resultBox.innerHTML = html;
+    resultBox.style.display = "block";
+
+    const ctx = document.getElementById("chart");
+    if (chart) chart.destroy();
+
+    chart = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: ["設定1", "設定2", "設定3", "設定4", "設定5", "設定6"],
+            datasets: [{
+                data: [
+                    scores[1], scores[2], scores[3],
+                    scores[4], scores[5], scores[6]
+                ],
+                backgroundColor: [
+                    "#ff4d6d", "#ffb3c1", "#c77dff",
+                    "#9d4edd", "#7b2cbf", "#5a189a"
+                ],
+                borderColor: "#ffffff",
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true, ticks: { color: "white" } },
+                x: { ticks: { color: "white" } }
+            },
+            plugins: { legend: { display: false } }
+        }
+    });
+}
+</script>
