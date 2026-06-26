@@ -181,43 +181,45 @@
         max-width: 350px;
     }
 
-    /* ▼▼▼ テンキー（下からスライドイン） ▼▼▼ */
-    .keypad {
-        position: fixed;
-        bottom: -350px;
-        left: 0;
-        width: 100%;
-        background: #2a003d;
-        padding: 15px 0;
-        box-shadow: 0 -5px 20px #ff4dff;
-        border-radius: 20px 20px 0 0;
-        transition: 0.3s ease-out;
-        z-index: 9999;
-    }
+/* ▼▼▼ テンキー（下からスライドイン） ▼▼▼ */
+.keypad {
+    position: fixed;
+    bottom: -260px;
+    left: 0;
+    width: 100%;
+    background: #2a003d;
+    padding: 10px 0;
+    box-shadow: 0 -5px 20px #ff4dff;
+    border-radius: 20px 20px 0 0;
+    transition: 0.25s ease-out;
+    z-index: 9999;
+}
 
-    .keypad.show {
-        bottom: 0;
-    }
+.keypad.show {
+    bottom: 0;
+}
 
-    .keypad-grid {
-        width: 90%;
-        margin: 0 auto;
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
-    }
+.keypad-grid {
+    width: 85%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
 
-    .key {
-        background: radial-gradient(circle at top, #ff4dff 0%, #7b2cbf 40%, #3a0050 100%);
-        padding: 18px 0;
-        border-radius: 12px;
-        text-align: center;
-        font-size: 22px;
-        font-weight: bold;
-        color: #fff;
-        box-shadow: 0 0 12px #ff4dff;
-        user-select: none;
-        transition: 0.1s;
+.key {
+    background: radial-gradient(circle at top, #ff4dff 0%, #7b2cbf 40%, #3a0050 100%);
+    padding: 14px 0;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    box-shadow: 0 0 10px #ff4dff;
+    user-select: none;
+    transition: 0.1s;
+}
+
     }
 
     .key:active {
@@ -248,13 +250,13 @@
     </div>
 
     <!-- 入力欄 -->
-    <div class="input-box">
-        <input id="spins" type="text" placeholder="総回転数" onclick="openKeypad(this)">
-        <input id="big" type="text" placeholder="BIG" onclick="openKeypad(this)">
-        <input id="reg" type="text" placeholder="REG" onclick="openKeypad(this)">
-        <input id="grape" type="text" placeholder="ぶどう" onclick="openKeypad(this)">
-        <input id="maxcoin" type="text" placeholder="最高出玉" onclick="openKeypad(this)">
-        <input id="currentCoin" type="text" placeholder="現在持ち玉" onclick="openKeypad(this)">
+
+<input id="spins" type="text" inputmode="none" placeholder="総回転数" onclick="openKeypad(this)">
+<input id="big" type="text" inputmode="none" placeholder="BIG" onclick="openKeypad(this)">
+<input id="reg" type="text" inputmode="none" placeholder="REG" onclick="openKeypad(this)">
+<input id="grape" type="text" inputmode="none" placeholder="ぶどう" onclick="openKeypad(this)">
+<input id="maxcoin" type="text" inputmode="none" placeholder="最高出玉" onclick="openKeypad(this)">
+<input id="currentCoin" type="text" inputmode="none" placeholder="現在持ち玉" onclick="openKeypad(this)">
 
         <!-- 補正ランプ -->
         <div class="pilot-wrap">
@@ -313,10 +315,18 @@ function openKeypad(input) {
 }
 
 document.addEventListener("click", function(e) {
-    if (!e.target.closest(".keypad") && !e.target.closest("input")) {
-        document.getElementById("keypad").classList.remove("show");
-    }
+    const keypad = document.getElementById("keypad");
+
+    // テンキーを押した → 閉じない
+    if (e.target.closest(".keypad")) return;
+
+    // 入力欄を押した → 開く（閉じない）
+    if (e.target.closest("input")) return;
+
+    // それ以外 → 閉じる
+    keypad.classList.remove("show");
 });
+
 
 /* ▼ テンキー入力 ▼ */
 function pressKey(num) {
