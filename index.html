@@ -95,10 +95,10 @@
     /* 入力ボックス */
     .input-box, .result-box {
         background: #1a0b2e;
-        padding: 15px;
+        padding: 5px;
         border-radius: 12px;
         width: 100%;
-        margin: 0 auto 15px auto;
+        margin: 0 auto 5px auto;
         box-shadow: 0 0 15px #5a189a;
         text-align: center;
     }
@@ -118,7 +118,7 @@
         display: flex;
         justify-content: center;
         gap: 15px;
-        margin: 10px 0;
+        margin:0 0 5px 0;
         font-size: 13px;
     }
 
@@ -146,7 +146,7 @@
     .btn-wrap {
         width: 100%;
         text-align: center;
-        margin-top: 5px;
+        margin-top: 0px;
     }
 
     button {
@@ -226,6 +226,48 @@
         box-shadow: 0 0 25px #ffb3ff;
         transform: scale(1.05);
     }
+    /* ▼ 状態表示ライン */
+.status-line {
+    font-size: 20px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ▼ 矢印の基本形（形だけ） */
+.status-line .arrow {
+    display: inline-block;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* ▼ DOWN：赤い右下矢印が流れる */
+.status-line.DOWN .arrow::after {
+    content: "↘";
+    color: #ff3b3b;
+    text-shadow: 0 0 10px #ff3b3b, 0 0 20px #ff0000;
+    animation: downFlow 0.8s infinite alternate ease-in-out;
+}
+
+@keyframes downFlow {
+    from { transform: translate(0, 0); opacity: 0.5; }
+    to   { transform: translate(6px, 6px); opacity: 1; }
+}
+
+/* ▼ KEEP：青い矢印が左→右へ流れる */
+.status-line.KEEP .arrow::after {
+    content: "→";
+    color: #4db8ff;
+    text-shadow: 0 0 10px #4db8ff, 0 0 20px #0099ff;
+    animation: keepFlow 0.8s infinite alternate ease-in-out;
+}
+
+@keyframes keepFlow {
+    from { transform: translateX(0); opacity: 0.5; }
+    to   { transform: translateX(8px); opacity: 1; }
+}
+
 </style>
 </head>
 <body>
@@ -482,7 +524,12 @@ function judge() {
     }
 
     let html = `<h2>${seriesData[seriesKey].name} 設定判別結果</h2>`;
-    html += `<div style="font-size:20px; margin-bottom:8px;">状態：<b>${status}</b></div>`;
+    html += `
+<div class="status-line ${status}">
+  状態：<b>${status}</b>
+  <span class="arrow"></span>
+</div>`;
+
     html += `<div style="font-size:16px; margin-bottom:12px;">差枚：${diffCoin} 枚</div>`;
 
     for (let s = 1; s <= 6; s++) {
