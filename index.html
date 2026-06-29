@@ -219,6 +219,7 @@
     user-select: none;
     transition: 0.1s;
 }
+    
     .key:active {
         box-shadow: 0 0 25px #ffb3ff;
         transform: scale(1.05);
@@ -555,6 +556,9 @@ function judge() {
 <div class="status-line ${status}">
   状態：<b>${status}</b>
   <span class="arrow"></span>
+
+ <button onclick="openOverlay()">ぶどうモードテスト表示</button>
+ 
 </div>`;
 
     html += `<div style="font-size:16px; margin-bottom:12px;">差枚：${diffCoin} 枚</div>`;
@@ -597,4 +601,13 @@ function judge() {
         }
     });
 }
+/* ▼ オーバーレイ開閉 ▼ */
+function openOverlay() {
+    document.getElementById("grapeOverlay").classList.remove("hidden");
+}
+
+document.getElementById("overlayClose").addEventListener("click", () => {
+    document.getElementById("grapeOverlay").classList.add("hidden");
+});
+    
 </script>
