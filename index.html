@@ -347,6 +347,28 @@
         <div class="key" onclick="backspace()">←</div>
     </div>
 </div>
+<!-- 🍇 ぶどうオーバーレイ -->
+<div id="grapeOverlay" class="overlay hidden">
+    <div class="overlay-content">
+        <h2 class="overlay-title">🍇 Grape Insight Mode</h2>
+
+        <div class="overlay-block">
+            <p>予測ぶどう：1/<span id="predGrape">6.23</span>（<span id="pred100">16.0</span>回）</p>
+            <p>実測ぶどう：1/<span id="realGrape">5.88</span>（<span id="real100">17.0</span>回）</p>
+            <p>ズレ：<span id="grapeDiff">+7.3</span>％（<span id="grapeJudge">強い</span>）</p>
+        </div>
+
+        <div class="overlay-buttons">
+            <button id="grapePlus" class="grape-btn">＋</button>
+            <button id="grapeMinus" class="grape-btn">−</button>
+        </div>
+
+        <button id="overlayClose" class="close-btn">閉じる</button>
+    </div>
+</div>
+
+<!-- オーバーレイを開くテストボタン（あとで消してOK） -->
+<button onclick="openOverlay()" style="margin-top:20px;">ぶどう測定モードを開く</button>
 
 <script>
 let activeInput = null;
