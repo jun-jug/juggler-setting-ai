@@ -710,4 +710,38 @@ function displayGrapeDiff(diff) {
     }
 }
 
+function calcPredictedGrape(scores) {
+    const seriesKey = document.getElementById("seriesSelect").value;
+    const settingTable = seriesData[seriesKey].setting;
+
+    let sum = 0;
+    let weight = 0;
+
+    for (let s = 1; s <= 6; s++) {
+        const grape = settingTable[s].grape;   // 設定ごとのぶどう確率
+        const prob = scores[s];                // 設定期待度（％）
+
+        sum += grape * prob;
+        weight += prob;
+    }
+
+    return weight ? (sum / weight) : null;
+}
+
+function calcGrapeDiff(actual, predicted) {
+    return actual - predicted;
+}
+
+function displayGrapeDiff(diff) {
+    const el = document.getElementById("grapeDiff");
+
+    if (diff > 0) {
+        el.innerText = `重い（+${diff.toFixed(2)}）`;
+    } else if (diff < 0) {
+        el.innerText = `軽い（${diff.toFixed(2)}）`;
+    } else {
+        el.innerText = "一致";
+    }
+}
+
 </script>
