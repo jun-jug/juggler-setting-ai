@@ -585,6 +585,25 @@ function judge() {
         scores[s] = (scores[s] / total) * 100;
     }
 
+function updateGrapeDisplay() {
+    // 実測ぶどうがゼロなら表示は空
+    if (grapeCount === 0) {
+        document.getElementById("grapeActual").innerText = "—";
+        document.getElementById("grapeDiff").innerText = "—";
+        return;
+    }
+
+    // 実測ぶどう（100G中のぶどう回数 → 1/◯◯）
+    const actual = 100 / grapeCount;
+    document.getElementById("grapeActual").innerText = `1/${actual.toFixed(2)}`;
+
+    // 予測ぶどうがあるならズレ判定
+    if (window.predictedGrape) {
+        const diff = calcGrapeDiff(actual, window.predictedGrape);
+        displayGrapeDiff(diff);
+    }
+}
+
 // ▼ 予測ぶどうの計算
     const predicted = calcPredictedGrape(scores);
     window.predictedGrape = predicted;
