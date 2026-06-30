@@ -657,15 +657,6 @@ function updateGrapeDisplay() {
     }
 }
 
- 
-</div>`;
-
-    html += `<div style="font-size:16px; margin-bottom:12px;">差枚：${diffCoin} 枚</div>`;
-
-    for (let s = 1; s <= 6; s++) {
-        html += `<div class="setting-line">設定${s}：${scores[s].toFixed(1)}%</div>`;
-    }
-
     const resultBox = document.getElementById("result");
     resultBox.innerHTML = html;
     resultBox.style.display = "block";
