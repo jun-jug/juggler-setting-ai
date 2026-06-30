@@ -718,8 +718,9 @@ function calcPredictedGrape(scores) {
     let weight = 0;
 
     for (let s = 1; s <= 6; s++) {
-        const grape = Number(settingTable[String(s)].grape);   // ← 数値化
-        const prob = Number(scores[s]);                // ← 数値化
+        const grapeDenom = Number(settingTable[s].grape);   // 6.35 など
+        const grapeProb = 1 / grapeDenom;                   // ← ここが重要！
+        const prob = Number(scores[s]);                     // 設定期待度 %
 
         sum += grape * prob;
         weight += prob;
