@@ -586,6 +586,8 @@ function judge() {
         scores[s] = (scores[s] / total) * 100;
     }
 
+    console.log("score:", score, "s:", s);     //　＜－－－－　NaNの確認
+
     // ▼ 予測ぶどうの計算
     const predicted = calcPredictedGrape(scores);
     window.predictedGrape = predicted;
