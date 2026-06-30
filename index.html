@@ -584,36 +584,78 @@ function judge() {
     for (let s = 1; s <= 6; s++) {
         scores[s] = (scores[s] / total) * 100;
     }
-}
-    
+
+    // ▼ 予測ぶどうの計算
+    const predicted = calcPredictedGrape(scores);
+    window.predictedGrape = predicted;
+
+    // ▼ 結果表示（ここはそのまま）
+    let html = `<h2>${seriesData[seriesKey].name} 設定判別結果</h2>`;
+    html += `
+<div class="status-line ${status}">
+  状態：<b>${status}</b>
+  <span class="arrow"></span>
+</div>`;
+
+    html += `<div style="font-size:16px; margin-bottom:12px;">差枚：${diffCoin} 枚</div>`;
+
+    for (let s = 1; s <= 6; s++) {
+        html += `<div class="setting-line">設定${s}：${scores[s].toFixed(1)}%</div>`;
+    }
+
+    const resultBox = document.getElementById("result");
+    resultBox.innerHTML = html;
+    resultBox.style.display = "block";
+
+    const ctx = document.getElementById("chart");
+    if (chart) chart.destroy();
+
+    chart = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: ["設定1", "設定2", "設定3", "設定4", "設定5", "設定6"],
+            datasets: [{
+                data: [
+                    scores[1], scores[2], scores[3],
+                    scores[4], scores[5], scores[6]
+                ],
+                backgroundColor: [
+                    "#ff4d6d", "#ffb3c1", "#c77dff",
+                    "#9d4edd", "#7b2cbf", "#5a189a"
+                ],
+                borderColor: "#ffffff",
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true, ticks: { color: "white" } },
+                x: { ticks: { color: "white" } }
+            },
+            plugins: { legend: { display: false } }
+        }
+    });
+}   // ← ★★★ ここで judge() を閉じる！！ ★★★
+
+
+
+/* ▼ 実測ぶどうの表示更新 ▼ */
 function updateGrapeDisplay() {
-    // 実測ぶどうがゼロなら表示は空
     if (grapeCount === 0) {
         document.getElementById("grapeActual").innerText = "—";
         document.getElementById("grapeDiff").innerText = "—";
         return;
     }
 
-    // 実測ぶどう（100G中のぶどう回数 → 1/◯◯）
     const actual = 100 / grapeCount;
     document.getElementById("grapeActual").innerText = `1/${actual.toFixed(2)}`;
 
-    // 予測ぶどうがあるならズレ判定
     if (window.predictedGrape) {
         const diff = calcGrapeDiff(actual, window.predictedGrape);
         displayGrapeDiff(diff);
     }
 }
-    
-// ▼ 予測ぶどうの計算
-    const predicted = calcPredictedGrape(scores);
-    window.predictedGrape = predicted;
-
-    let html = `<h2>${seriesData[seriesKey].name} 設定判別結果</h2>`;
-    html += `
-<div class="status-line ${status}">
-  状態：<b>${status}</b>
-  <span class="arrow"></span>
 
  
 </div>`;
