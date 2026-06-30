@@ -574,8 +574,8 @@ function judge() {
 
         if (diffOn) {
             const expectedCoin = spins * 3 * base.rate;
-            const diff = Math.abs(diffCoin - expectedCoin);
-            score += (1 / (diff + 1)) * 1;
+            const diffCoinCalc = Math.abs(actualCoin - expectedCoin);
+            score += (1 / (diffCoinCalc + 1)) * 1;
         }
 
         scores[s] = score;
