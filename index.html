@@ -391,9 +391,30 @@
 <div id="grapeOverlay" class="overlay hidden">
     <div class="overlay-content">
         <h2 class="overlay-title">🍇 Grape Insight Mode</h2>
+
+        <div class="grape-row">
+            <span>予測ぶどう：</span>
+            <span id="grapePredicted">—</span>
+        </div>
+
+        <div class="grape-row">
+            <span>実測ぶどう：</span>
+            <span id="grapeActual">—</span>
+        </div>
+
+        <div class="grape-row">
+            <span>ズレ：</span>
+            <span id="grapeDiff">—</span>
+        </div>
+
+        <div class="grape-btns">
+            <button onclick="addGrape()">＋ ぶどう1回</button>
+            <button onclick="removeGrape()">− 戻す</button>
+        </div>
+
         <button id="overlayClose" class="close-btn">閉じる</button>
     </div>
-</div>   
+</div>
 
 <script>
 
