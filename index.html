@@ -334,7 +334,6 @@
 <input id="spins" type="text" inputmode="none" placeholder="総回転数" onclick="openKeypad(this)">
 <input id="big" type="text" inputmode="none" placeholder="BIG" onclick="openKeypad(this)">
 <input id="reg" type="text" inputmode="none" placeholder="REG" onclick="openKeypad(this)">
-<input id="grape" type="text" inputmode="none" placeholder="ぶどう（100G中）" onclick="openKeypad(this)">
 <input id="maxcoin" type="text" inputmode="none" placeholder="最高出玉" onclick="openKeypad(this)">
 <input id="currentCoin" type="text" inputmode="none" placeholder="現在持ち玉" onclick="openKeypad(this)">
 
@@ -521,7 +520,6 @@ function judge() {
     const spins = Number(document.getElementById("spins").value) || 0;
     const big = Number(document.getElementById("big").value) || 0;
     const reg = Number(document.getElementById("reg").value) || 0;
-    const grape = Number(document.getElementById("grape").value) || 0;
     const maxcoin = Number(document.getElementById("maxcoin").value) || 0;
     const currentCoin = Number(document.getElementById("currentCoin").value) || 0;
 
@@ -529,7 +527,6 @@ function judge() {
     const diffCoin = currentCoin - maxcoin;
 
     const status = diffCoin < 0 ? "DOWN" : "KEEP";
-    const grapeOn = grape > 0;
     const diffOn = (currentCoin !== 0 || maxcoin !== 0);
 
     updatePilotLamps(grapeOn, diffOn);
@@ -543,21 +540,15 @@ function judge() {
         const actualBig = big > 0 ? spins / big : 9999;
         const actualReg = reg > 0 ? spins / reg : 9999;
         const actualSum = sum > 0 ? spins / sum : 9999;
-        const actualGrape = grape > 0 ? 100 / grape : 9999;
 
         const diffBig = Math.abs(actualBig - base.big);
         const diffReg = Math.abs(actualReg - base.reg);
         const diffSum = Math.abs(actualSum - base.sum);
-        const diffGrape = Math.abs(actualGrape - base.grape);
 
         let score =
             (1 / (diffBig + 1)) * 1 +
             (1 / (diffReg + 1)) * 3 +
             (1 / (diffSum + 1)) * 4;
-
-        if (grapeOn) {
-            score += (1 / (diffGrape + 1)) * 2;
-        }
 
         if (diffOn) {
             const expectedCoin = spins * 3 * base.rate;
@@ -572,6 +563,10 @@ function judge() {
     for (let s = 1; s <= 6; s++) {
         scores[s] = (scores[s] / total) * 100;
     }
+
+// ▼ 予測ぶどうの計算
+    const predicted = calcPredictedGrape(scores);
+    window.predictedGrape = predicted;
 
     let html = `<h2>${seriesData[seriesKey].name} 設定判別結果</h2>`;
     html += `
