@@ -549,7 +549,8 @@ function judge() {
 
     const status = diffCoin < 0 ? "DOWN" : "KEEP";
     const diffOn = (currentCoin !== 0 || maxcoin !== 0);
-
+    const grapeOn = false; 
+    
     updatePilotLamps(grapeOn, diffOn);
     updateGogoLamp(grapeOn, diffOn, true);
 
@@ -664,5 +665,49 @@ function openOverlay() {
 document.getElementById("overlayClose").addEventListener("click", () => {
     document.getElementById("grapeOverlay").classList.add("hidden");
 });
+
+let grapeCount = 0;
     
+function addGrape() {
+    grapeCount++;
+    updateGrapeDisplay();
+}
+
+function removeGrape() {
+    if (grapeCount > 0) grapeCount--;
+    updateGrapeDisplay();
+}
+
+function updateGrapeDisplay() {
+    if (grapeCount === 0) {
+        document.getElementById("grapeActual").innerText = "—";
+        document.getElementById("grapeDiff").innerText = "—";
+        return;
+    }
+
+    const actual = 100 / grapeCount;
+    document.getElementById("grapeActual").innerText = `1/${actual.toFixed(2)}`;
+
+    if (window.predictedGrape) {
+        const diff = calcGrapeDiff(actual, window.predictedGrape);
+        displayGrapeDiff(diff);
+    }
+}
+
+function calcGrapeDiff(actual, predicted) {
+    return actual - predicted;
+}
+
+function displayGrapeDiff(diff) {
+    const el = document.getElementById("grapeDiff");
+
+    if (diff > 0) {
+        el.innerText = `重い（+${diff.toFixed(2)}）`;
+    } else if (diff < 0) {
+        el.innerText = `軽い（${diff.toFixed(2)}）`;
+    } else {
+        el.innerText = "一致";
+    }
+}
+
 </script>
