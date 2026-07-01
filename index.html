@@ -706,7 +706,18 @@ function updateGrapeDisplay(predicted) {
         displayGrapeDiff(diff);
     }
 }
-    
+
+function updatePredictedGrape(predicted) {
+    const el = document.getElementById("grapePredicted");
+    if (!el) return;
+
+    if (predicted !== null && predicted !== undefined) {
+        el.innerText = `1/${predicted.toFixed(2)}`;
+    } else {
+        el.innerText = "—";
+    }
+}
+   
 function calcGrapeDiff(actual, predicted) {
     return actual - predicted;
 }
