@@ -596,6 +596,7 @@ function judge() {
     const predicted = calcPredictedGrape(scores);
     window.predictedGrape = predicted;　　　// <====あやしい
 
+    updatePredictedGrape(predicted);
     updateGrapeDisplay(predicted); 
     
     // ▼ 結果表示（ここはそのまま）
