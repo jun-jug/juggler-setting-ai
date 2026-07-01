@@ -723,7 +723,7 @@ function calcPredictedGrape(scores) {
         const grapeProb = 1 / grapeDenom;
         const prob = Number(scores[s]);
 
-        sum += grape * prob;
+        sum += grapeProb * prob;
         weight += prob;
     }
 
