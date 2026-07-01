@@ -591,11 +591,6 @@ function judge() {
     for (let s = 1; s <= 6; s++) {
         scores[s] = (scores[s] / total) * 100;
     }
-
-    // ▼ 予測ぶどうの計算
-    const predicted = calcPredictedGrape(scores);
-    window.predictedGrape = predicted;　　　// <====あやしい
-    updateGrapeDisplay(predicted); 
     
     // ▼ 結果表示（ここはそのまま）
     let html = `<h2>${seriesData[seriesKey].name} 設定判別結果</h2>`;
@@ -645,6 +640,12 @@ chart = new Chart(ctx, {
 
     }
 });   
+
+    // ▼ 予測ぶどうの計算
+    const predicted = calcPredictedGrape(scores);
+    window.predictedGrape = predicted;　　　// <====あやしい
+    updateGrapeDisplay(predicted); 
+
 }   // ← ★★★ ここで judge() を閉じる！！ ★★★
 
     
@@ -693,7 +694,7 @@ function updateGrapeDisplay(predicted) {
         return;
     }
 
-    const actual = 100 / grapeCount;
+    const actual = 1 / grapeCount;                                        //修正　100➔1
     document.getElementById("grapeActual").innerText = `1/${actual.toFixed(2)}`;
 
     if (predicted !== null && predicted !== undefined) {
