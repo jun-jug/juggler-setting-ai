@@ -595,7 +595,6 @@ function judge() {
     // ▼ 予測ぶどうの計算
     const predicted = calcPredictedGrape(scores);
     window.predictedGrape = predicted;　　　// <====あやしい
-
     updateGrapeDisplay(predicted); 
     
     // ▼ 結果表示（ここはそのまま）
@@ -645,11 +644,7 @@ chart = new Chart(ctx, {
         plugins: { legend: { display: false } }
 
     }
-});
-const predicted = calcPredictedGrape(scores);
-window.predictedGrape = predicted;
-updatePredictedGrape(predicted); // メイン画面用
-    
+});   
 }   // ← ★★★ ここで judge() を閉じる！！ ★★★
 
     
