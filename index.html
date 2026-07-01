@@ -591,6 +591,8 @@ function judge() {
     const predicted = calcPredictedGrape(scores);
     window.predictedGrape = predicted;　　　// <====あやしい
 
+    updateGrapeDisplay(predicted); 
+    
     // ▼ 結果表示（ここはそのまま）
     let html = `<h2>${seriesData[seriesKey].name} 設定判別結果</h2>`;
     html += `
@@ -639,8 +641,6 @@ chart = new Chart(ctx, {
 
     }
 });
-       updateGrapeDisplay(predicted); 
-
 }   // ← ★★★ ここで judge() を閉じる！！ ★★★
 
     
