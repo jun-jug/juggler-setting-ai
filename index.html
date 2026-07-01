@@ -535,8 +535,7 @@ function updatePilotLamps(grapeOn, diffOn) {
 
 /* ▼ 判定 ▼ */
 function judge() {
-    console.log("judge start");　　　　　　　　　　　　　　　　　　　　　//＜－－－－入れたやつ
-
+    const actualCoin = Number(document.getElementById("currentCoin").value) || 0;　　　// <-----入れた
     const seriesKey = document.getElementById("seriesSelect").value;
     const settingTable = seriesData[seriesKey].setting;
 
@@ -588,11 +587,9 @@ function judge() {
         scores[s] = (scores[s] / total) * 100;
     }
 
-    console.log("score:", score, "s:", s);     //　＜－－－－　NaNの確認
-
     // ▼ 予測ぶどうの計算
     const predicted = calcPredictedGrape(scores);
-    window.predictedGrape = predicted;
+    window.predictedGrape = predicted;　　　// <====あやしい
 
     // ▼ 結果表示（ここはそのまま）
     let html = `<h2>${seriesData[seriesKey].name} 設定判別結果</h2>`;
