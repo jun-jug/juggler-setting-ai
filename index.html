@@ -646,8 +646,9 @@ chart = new Chart(ctx, {
 
     }
 });
-
-        updatePredictedGrape(predicted);
+const predicted = calcPredictedGrape(scores);
+window.predictedGrape = predicted;
+updatePredictedGrape(predicted); // メイン画面用
     
 }   // ← ★★★ ここで judge() を閉じる！！ ★★★
 
@@ -663,8 +664,8 @@ function updateGrapeDisplay(predicted) {
     const actual = 100 / grapeCount;
     document.getElementById("grapeActual").innerText = `1/${actual.toFixed(2)}`;
 
-    if (window.predictedGrape) {
-        const diff = calcGrapeDiff(actual, window.predictedGrape);
+    if (predicted !== null && predicted !== undefined) {
+        const diff = calcGrapeDiff(actual, predicted);
         displayGrapeDiff(diff);
     }
 }
@@ -682,12 +683,12 @@ let grapeCount = 0;
     
 function addGrape() {
     grapeCount++;
-    updateGrapeDisplay();
+    updateGrapeDisplay(window.predictedGrape);
 }
 
 function removeGrape() {
     if (grapeCount > 0) grapeCount--;
-    updateGrapeDisplay();
+    updateGrapeDisplay(window.predictedGrape);
 }
 
 function updateGrapeDisplay(predicted) {
@@ -700,7 +701,6 @@ function updateGrapeDisplay(predicted) {
     const actual = 100 / grapeCount;
     document.getElementById("grapeActual").innerText = `1/${actual.toFixed(2)}`;
 
-    // predicted が 0 でも動くように修正
     if (predicted !== null && predicted !== undefined) {
         const diff = calcGrapeDiff(actual, predicted);
         displayGrapeDiff(diff);
