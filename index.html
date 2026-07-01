@@ -767,18 +767,6 @@ function displayGrapeDiff(diff) {
     } else {
         el.innerText = "一致";
     }
-
-function updatePredictedGrape(predicted) {
-    const el = document.getElementById("grapePredicted");
-    if (!el) return;
-
-    if (predicted !== null && predicted !== undefined) {
-        el.innerText = `1/${predicted.toFixed(2)}`;
-    } else {
-        el.innerText = "—";
-    }
-}
-    
 }
 
 </script>
