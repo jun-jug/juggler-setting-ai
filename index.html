@@ -291,6 +291,11 @@
     z-index: 9999;          /* ← これが無いとテンキーに負ける */
 }
 
+    /* ▼ ダブルタップ拡大を無効化（ここに追加） */
+#grapeOverlay {
+    touch-action: none;
+}
+    
 /* ▼ 非表示状態（最初は隠す） */
 .hidden {
     display: none;
@@ -682,7 +687,7 @@ function removeGrape() {
     updateGrapeDisplay();
 }
 
-function updateGrapeDisplay() {
+function updateGrapeDisplay(predicted) {
     if (grapeCount === 0) {
         document.getElementById("grapeActual").innerText = "—";
         document.getElementById("grapeDiff").innerText = "—";
@@ -692,12 +697,13 @@ function updateGrapeDisplay() {
     const actual = 100 / grapeCount;
     document.getElementById("grapeActual").innerText = `1/${actual.toFixed(2)}`;
 
-    if (window.predictedGrape) {
-        const diff = calcGrapeDiff(actual, window.predictedGrape);
+    // predicted が 0 でも動くように修正
+    if (predicted !== null && predicted !== undefined) {
+        const diff = calcGrapeDiff(actual, predicted);
         displayGrapeDiff(diff);
     }
 }
-
+    
 function calcGrapeDiff(actual, predicted) {
     return actual - predicted;
 }
