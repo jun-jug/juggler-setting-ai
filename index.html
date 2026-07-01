@@ -636,6 +636,8 @@ chart = new Chart(ctx, {
             x: { ticks: { color: "white" } }
         },
         plugins: { legend: { display: false } }
+
+       updateGrapeDisplay(predicted); 
     }
 });
 }   // ← ★★★ ここで judge() を閉じる！！ ★★★
