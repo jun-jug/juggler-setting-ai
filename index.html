@@ -651,7 +651,7 @@ chart = new Chart(ctx, {
 
     
 /* ▼ 実測ぶどうの表示更新 ▼ */
-function updateGrapeDisplay() {
+function updateGrapeDisplay(predicted) {
     if (grapeCount === 0) {
         document.getElementById("grapeActual").innerText = "—";
         document.getElementById("grapeDiff").innerText = "—";
