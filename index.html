@@ -291,57 +291,57 @@
     z-index: 9999;
 }
 
-/* 中身のボックス（タイト） */
+/* 中身のボックス（縦長＋余白増やす） */
 .overlay-content {
     position: relative;
     background: #1a1a1a;
-    padding: 18px 22px;
-    border-radius: 12px;
-    width: 260px;
+    padding: 28px 24px;   /* ← ここを増やして縦に余裕を作る */
+    border-radius: 14px;
+    width: 280px;         /* ← 少し横も広げてバランスUP */
     color: #fff;
     box-shadow: 0 0 12px rgba(255,0,255,0.4);
 }
 
-/* 右上の × ボタン */
+/* 右上の ❌ ボタン（絵文字風） */
 .overlay-close {
     position: absolute;
-    top: 6px;
-    right: 6px;
+    top: 10px;            /* ← 余裕を持たせてかぶり防止 */
+    right: 10px;
     background: transparent;
     border: none;
-    font-size: 22px;
-    color: #fff;
+    font-size: 28px;      /* ← 絵文字を大きくして押しやすく */
     cursor: pointer;
+    line-height: 1;
 }
 
 /* 行のスタイル */
 .grape-row {
     display: flex;
     justify-content: space-between;
-    margin: 10px 0;
-    font-size: 16px;
+    margin: 12px 0;
+    font-size: 17px;
 }
 
 /* ＋ − ボタン */
 .grape-buttons {
     display: flex;
     justify-content: space-between;
-    margin-top: 15px;
+    margin-top: 20px;
 }
 
 .grape-buttons button {
     width: 48%;
-    padding: 10px 0;
-    font-size: 18px;
+    padding: 12px 0;
+    font-size: 20px;
     background: #6a00ff;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     color: #fff;
     cursor: pointer;
 }
 
 
-    /* ▼ ダブルタップ拡大を無効化（ここに追加） */
+   /* ▼ ダブルタップ拡大を無効化（ここに追加） */
 #grapeOverlay {
     touch-action: none;
 }
@@ -435,7 +435,7 @@
 <!-- 🍇 オーバーレイ（ここに置く） -->
 <div id="overlay" class="overlay">
     <div class="overlay-content">
-        <button class="overlay-close" onclick="closeOverlay()">×</button>
+        <button class="overlay-close" onclick="closeOverlay()">❌</button>
 
         <div class="grape-row">
             <span>予測ぶどう：</span>
