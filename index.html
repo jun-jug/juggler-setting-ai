@@ -275,10 +275,10 @@
 @keyframes keepFlow {
     from { transform: translateX(0); opacity: 0.5; }
     to   { transform: translateX(8px); opacity: 1; }
-}
+}    
 
-    /* ▼ オーバーレイ（画面全体に重ねる） */
-.overlay {
+/* オーバーレイ背景 */
+#overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -289,29 +289,36 @@
     justify-content: center;
     align-items: center;
     z-index: 9999;
+
+    /* ★ ダブルタップ拡大禁止（強制） */
+    touch-action: manipulation;
 }
 
 /* 中身のボックス（縦長＋余白増やす） */
 .overlay-content {
     position: relative;
     background: #1a1a1a;
-    padding: 28px 24px;   /* ← ここを増やして縦に余裕を作る */
+    padding: 40px 26px 26px;   /* ★ 上に余白を増やして × がかぶらない */
     border-radius: 14px;
-    width: 280px;         /* ← 少し横も広げてバランスUP */
+    width: 280px;
     color: #fff;
     box-shadow: 0 0 12px rgba(255,0,255,0.4);
+
+    /* ★ ダブルタップ拡大禁止（念のため） */
+    touch-action: manipulation;
 }
 
 /* 右上の ❌ ボタン（絵文字風） */
 .overlay-close {
     position: absolute;
-    top: 10px;            /* ← 余裕を持たせてかぶり防止 */
+    top: 10px;     /* ★ 余裕を持たせる */
     right: 10px;
     background: transparent;
     border: none;
-    font-size: 28px;      /* ← 絵文字を大きくして押しやすく */
+    font-size: 30px;   /* ★ 絵文字を大きくして押しやすく */
     cursor: pointer;
     line-height: 1;
+    z-index: 10000;    /* ★ かぶり防止 */
 }
 
 /* 行のスタイル */
@@ -340,11 +347,6 @@
     cursor: pointer;
 }
 
-
-   /* ▼ ダブルタップ拡大を無効化（ここに追加） */
-#grapeOverlay {
-    touch-action: none;
-}
     
 /* ▼ 非表示状態（最初は隠す） */
 .hidden {
