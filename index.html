@@ -657,7 +657,7 @@ function updateGrapeDisplay(predicted) {
         return;
     }
 
-    const actual = grapeCount / 100;                                            //変更箇所
+    const actual = grapeCount;                                            //変更箇所
     document.getElementById("grapeActual").innerText = `1/${actual.toFixed(2)}`;
 
     if (predicted !== null && predicted !== undefined) {
