@@ -319,20 +319,32 @@
     touch-action: manipulation;
 }
 
-/* ★ 閉じる行：右寄せ */
+/* 閉じる行：右寄せ */
 .overlay-header {
     display: flex;
     justify-content: flex-end;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
-/* ❌ ボタン（絵文字風） */
+/* ❌ ボタン（正方形＋右上固定） */
 .overlay-close {
     background: transparent;
     border: none;
-    font-size: 26px;
+    font-size: 22px;
     cursor: pointer;
     line-height: 1;
+
+    /* ★ 正方形にする */
+    width: 32px;
+    height: 32px;
+
+    /* ★ 中央に絵文字を配置 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* ★ ボタンの横長化を防ぐ */
+    padding: 0;
 }
 
 .grape-row {
