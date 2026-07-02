@@ -700,6 +700,7 @@ function updateGrapeDisplay(predicted) {
     document.getElementById("grapeActual").innerText = `1/${actual.toFixed(2)}`;
 
     if (predicted !== null && predicted !== undefined) {
+        document.getElementById("grapePredicted").innerText = `1/${predicted.toFixed(2)}`;
         const diff = calcGrapeDiff(actual, predicted);
         displayGrapeDiff(diff);
     }
