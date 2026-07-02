@@ -690,18 +690,29 @@ function removeGrape() {
 }
 
 function updateGrapeDisplay(predicted) {
-    if (grapeCount === 0) {
+    const actualCount = grapeCount;
+
+    if (actualCount === 0) {
         document.getElementById("grapeActual").innerText = "—";
         document.getElementById("grapeDiff").innerText = "—";
+        document.getElementById("grapePredicted").innerText = "—";
         return;
     }
 
-    const actual = 100 / grapeCount;                        　　　　　　　　　　　//変更箇所
-    document.getElementById("grapeActual").innerText = `1/${actual.toFixed(2)}`;
+    // 実測ぶどう確率（100G換算）
+    const actualRate = 100 / actualCount;
 
+    // ★ 実測ぶどう：カウント＋確率の両方を表示
+    document.getElementById("grapeActual").innerText =
+        `${actualCount} 回（1/${actualRate.toFixed(2)}）`;
+
+    // ★ 予測ぶどう（公称値）
     if (predicted !== null && predicted !== undefined) {
-        document.getElementById("grapePredicted").innerText = `1/${predicted.toFixed(2)}`;
-        const diff = calcGrapeDiff(actual, predicted);
+        document.getElementById("grapePredicted").innerText =
+            `1/${predicted.toFixed(2)}`;
+
+        // ★ ズレ計算
+        const diff = calcGrapeDiff(actualRate, predicted);
         displayGrapeDiff(diff);
     }
 }
