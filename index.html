@@ -279,17 +279,67 @@
 
     /* ▼ オーバーレイ（画面全体に重ねる） */
 .overlay {
-    position: fixed;        /* ← これが無いと最下部に出る */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background: rgba(0,0,0,0.55);
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
-    z-index: 9999;          /* ← これが無いとテンキーに負ける */
+    z-index: 9999;
 }
+
+/* 中身のボックス（タイト） */
+.overlay-content {
+    position: relative;
+    background: #1a1a1a;
+    padding: 18px 22px;
+    border-radius: 12px;
+    width: 260px;
+    color: #fff;
+    box-shadow: 0 0 12px rgba(255,0,255,0.4);
+}
+
+/* 右上の × ボタン */
+.overlay-close {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: transparent;
+    border: none;
+    font-size: 22px;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* 行のスタイル */
+.grape-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+/* ＋ − ボタン */
+.grape-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.grape-buttons button {
+    width: 48%;
+    padding: 10px 0;
+    font-size: 18px;
+    background: #6a00ff;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+}
+
 
     /* ▼ ダブルタップ拡大を無効化（ここに追加） */
 #grapeOverlay {
@@ -300,17 +350,7 @@
 .hidden {
     display: none;
 }
-
-/* ▼ 中央のボックス */
-.overlay-content {
-    background: #222;
-    padding: 20px;
-    border-radius: 10px;
-    color: #fff;
-    width: 85%;
-    max-width: 420px;
-}
-   
+  
 </style>
 </head>
 <body>
@@ -393,9 +433,9 @@
 </div>
 
 <!-- 🍇 オーバーレイ（ここに置く） -->
-<div id="grapeOverlay" class="overlay hidden">
+<div id="overlay" class="overlay">
     <div class="overlay-content">
-        <h2 class="overlay-title">🍇 Grape Insight Mode</h2>
+        <button class="overlay-close" onclick="closeOverlay()">×</button>
 
         <div class="grape-row">
             <span>予測ぶどう：</span>
@@ -412,12 +452,10 @@
             <span id="grapeDiff">—</span>
         </div>
 
-        <div class="grape-btns">
-            <button onclick="addGrape()">＋ ぶどう1回</button>
-            <button onclick="removeGrape()">− 戻す</button>
+        <div class="grape-buttons">
+            <button onclick="addGrape()">＋</button>
+            <button onclick="removeGrape()">−</button>
         </div>
-
-        <button id="overlayClose" class="close-btn">閉じる</button>
     </div>
 </div>
 
@@ -675,7 +713,11 @@ function updateGrapeDisplay(predicted) {
 
 /* ▼ オーバーレイ開閉 ▼ */
 function openOverlay() {
-    document.getElementById("grapeOverlay").classList.remove("hidden");
+    document.getElementById("overlay").style.display = "flex";
+}
+
+function closeOverlay() {
+    document.getElementById("overlay").style.display = "none";
 }
 
 document.getElementById("overlayClose").addEventListener("click", () => {
