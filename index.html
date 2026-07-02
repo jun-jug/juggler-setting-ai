@@ -642,9 +642,14 @@ chart = new Chart(ctx, {
 });   
 
     // ▼ 予測ぶどうの計算
-    const predicted = calcPredictedGrape(scores);
-    window.predictedGrape = predicted;
-    updateGrapeDisplay(predicted); 
+   const predictedObj = calcPredictedGrape(scores, seriesKey);
+
+　　window.predictedSetting = predictedObj.setting;
+　　window.predictedGrape = predictedObj.grape;
+
+　　updatePredictedGrape(predictedObj);
+　　updateGrapeDisplay(predictedObj.grape);
+ 
 
 }   // ← ★★★ ここで judge() を閉じる！！ ★★★
 
@@ -699,33 +704,28 @@ function updateGrapeDisplay(predicted) {
         return;
     }
 
-    // 実測ぶどう確率（100G換算）
     const actualRate = 100 / actualCount;
 
-    // ★ 実測ぶどう：カウント＋確率の両方を表示
+    // 実測ぶどう：カウント＋確率
     document.getElementById("grapeActual").innerText =
         `${actualCount} 回（1/${actualRate.toFixed(2)}）`;
 
-    // ★ 予測ぶどう（公称値）
+    // 予測ぶどう（公称値）
     if (predicted !== null && predicted !== undefined) {
         document.getElementById("grapePredicted").innerText =
-            `1/${predicted.toFixed(2)}`;
+            `設定${window.predictedSetting}（1/${predicted.toFixed(2)}）`;
 
-        // ★ ズレ計算
         const diff = calcGrapeDiff(actualRate, predicted);
         displayGrapeDiff(diff);
     }
 }
 
-function updatePredictedGrape(predicted) {
+//予測ぶどうの表示（設定〇　（1/〇〇））
+function updatePredictedGrape(predictedObj) {
     const el = document.getElementById("grapePredicted");
     if (!el) return;
 
-    if (predicted !== null && predicted !== undefined) {
-        el.innerText = `1/${predicted.toFixed(2)}`;
-    } else {
-        el.innerText = "—";
-    }
+    el.innerText = `設定${predictedObj.setting}（1/${predictedObj.grape.toFixed(2)}）`;
 }
    
 function calcGrapeDiff(actual, predicted) {
@@ -744,7 +744,7 @@ function displayGrapeDiff(diff) {
     }
 }
 
-function calcPredictedGrape(settingProb) {
+function calcPredictedGrape(settingProb, seriesKey) {
     // 最も確率が高い設定を採用
     let bestSetting = 1;
     let bestProb = 0;
@@ -756,17 +756,13 @@ function calcPredictedGrape(settingProb) {
         }
     }
 
-    // 公称値テーブル
-    const grapeRate = {
-        1: 6.35,
-        2: 6.33,
-        3: 6.29,
-        4: 6.25,
-        5: 6.23,
-        6: 6.18
-    };
+    // シリーズごとの公称ぶどう値
+    const grapeRate = seriesData[seriesKey].setting[bestSetting].grape;
 
-    return grapeRate[bestSetting];
+    return {
+        setting: bestSetting,
+        grape: grapeRate
+    };
 }
 
 function calcGrapeDiff(actual, predicted) {
